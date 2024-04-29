@@ -3,16 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\commends;
-use App\Models\Products;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,15 +20,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
-        'provider',
-        'provider_id',
-        'provider_token'
-
+        'role_id',
+        'is_blocked',
     ];
-
-
-    protected $table = "users";
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,22 +35,23 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Get the attributes that should be cast.
      *
-     * @var array<string, string>
+     * @return array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-    public function products()
+    protected function casts(): array
     {
-        return $this->hasMany(Products::class , 'user_id');
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 
-    public function commands()
-    {
-        return $this->hasMany(commends::class);
+    public function products(){
+        return $this->hasMany(Product::class);
+    }
+
+    public function order(){
+        return $this->hasMany(order::class);
     }
 }
